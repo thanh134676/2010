@@ -177,14 +177,13 @@ Hôm nay, 20/10 là của em, nhưng anh mong những ngày còn lại cũng th�
     }
 
     function showChoices(){
-      var choice = document.getElementById('choiceButtons');
-      if (choice.style.display === 'flex') {
-        choice.style.display = 'none';
-      } else {
-        burstHearts();
-        choice.style.display = 'flex';
-      }
-    }
+  var choice = document.getElementById('choiceButtons');
+  if (choice.style.display !== 'flex') {
+    burstHearts();
+    choice.style.display = 'flex';
+  }
+}
+
 
 
     function loveYes(){
@@ -241,4 +240,5 @@ Hôm nay, 20/10 là của em, nhưng anh mong những ngày còn lại cũng th�
   </script>
 </body>
 </html>
+
 
