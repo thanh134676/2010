@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chúc mừng Ngày Phụ Nữ Việt Nam 20/10</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --accent:#ff2e63;
+      --accent-light:#ff85a1;
+      --text:#3b2b2b;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:Inter,system-ui,Arial,sans-serif;
+      background:radial-gradient(circle at center, #ffe3ec 0%, #fff6fb 100%);
+      color:var(--text);
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+    }
+    .card{
+      background:rgba(255,255,255,0.95);
+      border-radius:24px;
+      box-shadow:0 12px 32px rgba(255, 45, 99, 0.15);
+      padding:2.2rem 2.6rem;
+      text-align:center;
+      max-width:720px;
+      position:relative;
+      z-index:10;
+      animation:fadeIn 0.5s ease;
+    }
+    h1{
+      font-family:'Playfair Display',serif;
+      color:var(--accent);
+      font-size:2.2rem;
+      margin-bottom:0.6rem;
+    }
+    p{
+      font-size:1.05rem;
+      color:#5a3b3b;
+      line-height:1.6;
+      margin:0.4rem 0 0.8rem 0;
+    }
+    button{
+      margin-top:0.9rem;
+      padding:0.7rem 1.4rem;
+      border:none;
+      border-radius:28px;
+      background:linear-gradient(90deg,var(--accent),var(--accent-light));
+      color:white;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow:0 6px 18px rgba(255, 45, 99, 0.25);
+      transition:transform .18s,box-shadow .18s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:hover{transform:scale(1.08)}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)}}
+    .choice-buttons {margin-top:20px;display:none;gap:15px;justify-content:center;}
+    .heart{
+      --s:40px;
+      width:var(--s);
+      height:var(--s);
+      position:absolute;
+      left:50%;
+      bottom:-100px;
+      transform:rotate(-45deg);
+      background:linear-gradient(145deg,#ff6b98 0%, #ff2e63 60%);
+      border-radius:8%;
+      z-index:5;
+      filter:drop-shadow(0 6px 16px rgba(255,50,110,0.25));
+    }
+    .heart::before,.heart::after{content:'';position:absolute;width:var(--s);height:var(--s);background:inherit;border-radius:50%;}
+    .heart::before{top:calc(var(--s)*-0.5);left:0;}
+    .heart::after{left:calc(var(--s)*0.5);top:0;}
+    @keyframes floatUp{0%{transform:translate3d(0,0,0) rotate(-45deg) scale(1);opacity:1}100%{transform:translate3d(0,-110vh,0) rotate(-45deg) scale(0.9);opacity:0}}
+
+    .snowflake{
+      position:absolute;
+      top:-10px;
+      color:white;
+      font-size:1em;
+      opacity:0.9;
+      text-shadow:0 0 6px rgba(255,255,255,0.8),0 0 12px rgba(255,200,255,0.6);
+      animation:fall linear forwards;
+      z-index:2;
+    }
+    @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(360deg);opacity:0.6}}
+
+    .surprise{
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%) scale(0);
+      background:white;
+      border-radius:20px;
+      padding:2.5rem 3rem; /* 👈 tăng kích thước khung thông báo */
+      text-align:center;
+      font-family:'Playfair Display',serif;
+      color:var(--accent);
+      font-size:1.8rem; /* 👈 chữ to hơn chút */
+      box-shadow:0 8px 24px rgba(255,45,99,0.25);
+      opacity:0;
+      transition:all .5s ease;
+      z-index:999;
+      line-height:1.6;
+    }
+    .surprise.show{
+      transform:translate(-50%,-50%) scale(1);
+      opacity:1;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>💖 Chúc mừng Ngày Phụ Nữ Việt Nam 20/10 💖</h1>
+    <p>Chúc em – người khiến thế giới này đẹp hơn trong mắt anh – Chúc em luôn vui vẻ, yêu đời và hạnh phúc.<br>
+    Hôm nay, 20/10 là của em, nhưng anh mong những ngày còn lại cũng thế 💫</p>
+    <button id="mainBtn">💞Em có thích anh không 💞</button>
+    <div class="choice-buttons" id="choiceButtons">
+      <button onclick="loveYes()">❤️ Thích</button>
+      <button id="noBtn">💔 Không Thích</button>
+    </div>
+  </div>
+  <div class="surprise" id="surpriseBox"></div>
+
+<script>
+  var hoverCount = 0;
+  var noClickCount = 0;
+
+  function makeHeart(size){
+    var h = document.createElement('div');
+    h.className='heart';
+    h.style.setProperty('--s', size+'px');
+    document.body.appendChild(h);
+    h.style.left = Math.random()*window.innerWidth+'px';
+    var dur = 5 + Math.random()*3;
+    h.style.animation = 'floatUp '+dur+'s ease-in-out forwards';
+    h.style.webkitAnimation = 'floatUp '+dur+'s ease-in-out forwards';
+    setTimeout(()=>h.remove(), dur*1000);
+  }
+
+  function makeSnowflake(){
+    var s = document.createElement('div');
+    s.className='snowflake';
+    s.textContent='❄';
+    s.style.left = Math.random()*window.innerWidth+'px';
+    s.style.fontSize = 10 + Math.random()*14+'px';
+    var dur = 5 + Math.random()*5;
+    s.style.animationDuration = dur+'s';
+    s.style.webkitAnimationDuration = dur+'s';
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(), dur*1000);
+  }
+
+  function burstHearts(){
+    for(let i=0;i<200;i++){
+      setTimeout(()=>makeHeart(Math.round(Math.random()*28+22)), i*15);
+    }
+    for(let k=0;k<100;k++){
+      setTimeout(()=>makeSnowflake(), k*100);
+    }
+  }
+
+  function showChoices(){
+    burstHearts();
+    document.getElementById('choiceButtons').style.display='flex';
+    document.getElementById('mainBtn').style.display='none';
+  }
+
+  function loveYes(){
+    var box = document.getElementById('surpriseBox');
+    box.textContent='💞 Hehe !! Biết gòi nhe 💞';
+    box.classList.add('show');
+    setTimeout(()=>box.classList.remove('show'), 4000);
+  }
+
+  function loveNo(){
+    var phrases = [
+      "😢 Em chắc chứ?",
+      "🥺 Thử nghĩ lại đi nha?",
+      "😭 Thiệt luôn hở?",
+      "😳 Coi lại coi, em nói lộn hông zị?",
+    ];
+
+    var box = document.getElementById('surpriseBox');
+    var noBtn = document.getElementById('noBtn');
+
+    // Ẩn nút khi hiển thị thông báo
+    noBtn.style.visibility = 'hidden';
+
+    // Kiểm tra số lần bấm
+    noClickCount++;
+
+    if(noClickCount >= 5){
+      box.textContent = "😂 Thôi đừng cố nữa, định mệnh đã an bài rồi 💘";
+      noClickCount = 0; // reset lại
+    } else {
+      // Hiện câu ngẫu nhiên
+      box.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+    }
+
+    // Hiển thị và ẩn dần thông báo
+    box.classList.add('show');
+    setTimeout(()=>{
+      box.classList.remove('show');
+      setTimeout(()=>{ noBtn.style.visibility = 'visible'; }, 400);
+    }, 4000);
+  }
+
+  function moveButton(){
+    var btn = document.getElementById('noBtn');
+    var card = document.querySelector('.card');
+    var rect = card.getBoundingClientRect();
+
+    hoverCount++;
+    var maxLeft = rect.width - btn.offsetWidth - 20;
+    var maxTop = rect.height - btn.offsetHeight - 20;
+    var left = Math.random()*maxLeft + 10;
+    var top = Math.random()*maxTop + 10;
+
+    card.style.position='relative';
+    btn.style.position='absolute';
+    btn.style.transition='all 0.6s ease';
+    btn.style.left = left+'px';
+    btn.style.top = top+'px';
+    btn.style.transform = 'rotate('+(Math.random()*10-5)+'deg)';
+  }
+
+  // Bắt sự kiện click / touch
+  var mainBtn = document.getElementById('mainBtn');
+  mainBtn.addEventListener('click', showChoices);
+  mainBtn.addEventListener('touchstart', e=>{e.preventDefault();showChoices();});
+
+  var noBtn = document.getElementById('noBtn');
+  noBtn.addEventListener('pointerenter', moveButton);
+  noBtn.addEventListener('touchstart', moveButton);
+  noBtn.addEventListener('click', loveNo);
+
+  setInterval(()=>{
+    if(Math.random()<0.25) makeHeart(Math.round(Math.random()*28+20));
+    if(Math.random()<0.35) makeSnowflake();
+  }, 500);
+</script>
+
+</body>
+</html>
