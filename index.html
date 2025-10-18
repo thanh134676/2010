@@ -135,110 +135,129 @@ Hôm nay, 20/10 là của em, nhưng anh mong những ngày còn lại cũng th�
   </div>
   <div class="surprise" id="surpriseBox">💐 Bạn thật tuyệt vời! Hãy luôn yêu đời và tỏa sáng nhé! 💕</div>
 
-  <script>
-    var hoverCount = 0;
+<script>
+  var hoverCount = 0;
+  var noClickCount = 0; // 🔹 Đếm số lần bấm "Không thích"
 
-    function makeHeart(size){
-      var h = document.createElement('div');
-      h.className='heart';
-      h.style.setProperty('--s', size+'px');
-      document.body.appendChild(h);
-      h.style.left = Math.random()*window.innerWidth+'px';
-      var dur = 5 + Math.random()*3;
-      h.style.animation = 'floatUp '+dur+'s ease-in-out forwards';
-      h.style.webkitAnimation = 'floatUp '+dur+'s ease-in-out forwards';
-      setTimeout(function(){ h.remove(); }, dur*1000);
+  function makeHeart(size){
+    var h = document.createElement('div');
+    h.className='heart';
+    h.style.setProperty('--s', size+'px');
+    document.body.appendChild(h);
+    h.style.left = Math.random()*window.innerWidth+'px';
+    var dur = 5 + Math.random()*3;
+    h.style.animation = 'floatUp '+dur+'s ease-in-out forwards';
+    h.style.webkitAnimation = 'floatUp '+dur+'s ease-in-out forwards';
+    setTimeout(function(){ h.remove(); }, dur*1000);
+  }
+
+  function makeSnowflake(){
+    var s = document.createElement('div');
+    s.className='snowflake';
+    s.textContent='❄';
+    s.style.left = Math.random()*window.innerWidth+'px';
+    s.style.fontSize = 10 + Math.random()*14+'px';
+    var dur = 5 + Math.random()*5;
+    s.style.animationDuration = dur+'s';
+    s.style.webkitAnimationDuration = dur+'s';
+    document.body.appendChild(s);
+    setTimeout(function(){ s.remove(); }, dur*1000);
+  }
+
+  function burstHearts(){
+    for(var i=0;i<200;i++){
+      setTimeout(function(){
+        makeHeart(Math.round(Math.random()*28+22));
+      }, i*15);
     }
-
-    function makeSnowflake(){
-      var s = document.createElement('div');
-      s.className='snowflake';
-      s.textContent='❄';
-      s.style.left = Math.random()*window.innerWidth+'px';
-      s.style.fontSize = 10 + Math.random()*14+'px';
-      var dur = 5 + Math.random()*5;
-      s.style.animationDuration = dur+'s';
-      s.style.webkitAnimationDuration = dur+'s';
-      document.body.appendChild(s);
-      setTimeout(function(){ s.remove(); }, dur*1000);
+    for(var k=0;k<100;k++){
+      setTimeout(function(){
+        makeSnowflake();
+      }, k*100);
     }
+  }
 
-    function burstHearts(){
-      for(var i=0;i<200;i++){
-        setTimeout(function(){
-          makeHeart(Math.round(Math.random()*28+22));
-        }, i*15);
-      }
-      for(var k=0;k<100;k++){
-        setTimeout(function(){
-          makeSnowflake();
-        }, k*100);
-      }
-    }
+  function showChoices(){
+    burstHearts();
+    document.getElementById('choiceButtons').style.display='flex';
+    document.getElementById('mainBtn').style.display='none'; // 🔹 ẨN NÚT CHÍNH SAU KHI BẤM
+  }
 
- function showChoices(){
-  burstHearts();
-  document.getElementById('choiceButtons').style.display='flex';
-}
+  function loveYes(){
+    var box = document.getElementById('surpriseBox');
+    box.textContent='💞 Hehe !! Biết gòi nhe 💞';
+    box.classList.add('show');
+    setTimeout(function(){ box.classList.remove('show'); }, 4000);
+  }
 
+  // 🔹 Mỗi lần bấm "Không thích" sẽ hiện câu khác nhau
+  function loveNo(){
+    var phrases = [
+      "😢 Em chắc chứ?",
+      "🥺 Thử nghĩ lại đi nha?",
+      "😭 Thiệt luôn hở?",
+	  "😳 Coi lại coi, em nói lộn hông zị?",
+	  
+    ];
 
+    var box = document.getElementById('surpriseBox');
+    box.textContent = phrases[noClickCount % phrases.length];
+    box.classList.add('show');
+    setTimeout(function(){ box.classList.remove('show'); }, 3000);
 
+    noClickCount++;
+  }
 
-    function loveYes(){
+  function moveButton(){
+    var btn = document.getElementById('noBtn');
+    var card = document.querySelector('.card');
+    var rect = card.getBoundingClientRect();
+
+    hoverCount++;
+    if(hoverCount>=5){
       var box = document.getElementById('surpriseBox');
-      box.textContent='💞 Hehe !! Biết gòi nhe💞';
+      box.textContent='😂 Thôi đừng cố nữa, định mệnh đã an bài rồi 💘';
       box.classList.add('show');
       setTimeout(function(){ box.classList.remove('show'); }, 4000);
+      hoverCount=0;
+      return;
     }
 
-    function moveButton(){
-      var btn = document.getElementById('noBtn');
-      var card = document.querySelector('.card');
-      var rect = card.getBoundingClientRect();
+    var maxLeft = rect.width - btn.offsetWidth - 20;
+    var maxTop = rect.height - btn.offsetHeight - 20;
+    var left = Math.random()*maxLeft + 10;
+    var top = Math.random()*maxTop + 10;
 
-      hoverCount++;
-      if(hoverCount>=5){
-        var box = document.getElementById('surpriseBox');
-        box.textContent='😂 Thôi đừng cố nữa, định mệnh đã an bài rồi 💘';
-        box.classList.add('show');
-        setTimeout(function(){ box.classList.remove('show'); }, 4000);
-        hoverCount=0;
-        return;
-      }
+    card.style.position='relative';
+    btn.style.position='absolute';
+    btn.style.transition='all 0.6s ease';
+    btn.style.left = left+'px';
+    btn.style.top = top+'px';
+    btn.style.transform = 'rotate('+(Math.random()*10-5)+'deg)';
+  }
 
-      var maxLeft = rect.width - btn.offsetWidth - 20;
-      var maxTop = rect.height - btn.offsetHeight - 20;
-      var left = Math.random()*maxLeft + 10;
-      var top = Math.random()*maxTop + 10;
+  // Bắt cả click + touch cho iOS
+  var mainBtn = document.getElementById('mainBtn');
+  mainBtn.addEventListener('click', showChoices);
+  mainBtn.addEventListener('touchstart', function(e){
+    e.preventDefault();
+    showChoices();
+  });
 
-      card.style.position='relative';
-      btn.style.position='absolute';
-      btn.style.transition='all 0.6s ease';
-      btn.style.left = left+'px';
-      btn.style.top = top+'px';
-      btn.style.transform = 'rotate('+(Math.random()*10-5)+'deg)';
-    }
+  var noBtn = document.getElementById('noBtn');
+  noBtn.addEventListener('pointerenter', moveButton);
+  noBtn.addEventListener('touchstart', moveButton);
+  noBtn.addEventListener('click', loveNo); // 🔹 Thêm sự kiện click cho "Không thích"
 
-    // Bắt cả click + touch cho iOS
-    var mainBtn = document.getElementById('mainBtn');
-    mainBtn.addEventListener('click', showChoices);
-    mainBtn.addEventListener('touchstart', function(e){
-      e.preventDefault(); // tránh delay 300ms trên Safari
-      showChoices();
-    });
+  setInterval(function(){
+    if(Math.random()<0.25) makeHeart(Math.round(Math.random()*28+20));
+    if(Math.random()<0.35) makeSnowflake();
+  }, 500);
+</script>
 
-    var noBtn = document.getElementById('noBtn');
-    noBtn.addEventListener('pointerenter', moveButton);
-    noBtn.addEventListener('touchstart', moveButton);
 
-    setInterval(function(){
-      if(Math.random()<0.25) makeHeart(Math.round(Math.random()*28+20));
-      if(Math.random()<0.35) makeSnowflake();
-    }, 500);
-  </script>
 </body>
 </html>
-
 
 
 
